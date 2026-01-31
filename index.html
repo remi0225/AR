@@ -3,20 +3,25 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>A-Frame + AR.js Hiro Marker Card</title>
+    <title>AR.js Hiro + Card</title>
 
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
 
+    <script>
+      // 常にカメラ正面を向く（ビルボード）
+      AFRAME.registerComponent("billboard", {
+        schema: { target: { type: "selector" } },
+        tick: function () {
+          const t = this.data.target;
+          if (!t) return;
+          this.el.object3D.quaternion.copy(t.object3D.quaternion);
+        }
+      });
+    </script>
+
     <style>
-      html, body {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        background: #000;
-      }
+      html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
     </style>
   </head>
 
@@ -27,24 +32,24 @@
       renderer="antialias: true; colorManagement: true; alpha: true"
       arjs="sourceType: webcam; trackingMethod: best; debugUIEnabled: false;"
     >
-      <!-- Assets -->
       <a-assets>
         <img id="card" src="img/card.png" crossorigin="anonymous">
+        <img id="sample" src="img/sample.png" crossorigin="anonymous">
       </a-assets>
 
-      <!-- Hiro marker -->
       <a-marker preset="hiro">
+        <!-- 名刺比率(91:55=1.6545)に合わせる：width=1 → height=0.604 -->
         <a-plane
           material="src: #card; transparent: true; side: double;"
-          position="0 0.5 0"
-          rotation="-90 0 0"
           width="1"
-          height="0.6"
+          height="0.604"
+          position="0 0.05 0"
+          rotation="0 0 0"
+          billboard="target: #cam"
         ></a-plane>
       </a-marker>
 
-      <!-- Camera -->
-      <a-entity camera></a-entity>
+      <a-entity id="cam" camera></a-entity>
     </a-scene>
   </body>
 </html>
