@@ -2,41 +2,63 @@
 <html lang="ja">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>A-Frame a-box</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>A-Frame + AR.js Hiro Marker Demo</title>
+
+    <!-- A-Frame -->
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+
+    <!-- AR.js for A-Frame (hiro marker) -->
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
+
     <style>
-      html, body { margin: 0; height: 100%; }
-      a-scene { width: 100%; height: 100%; }
+      html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
+      .hint {
+        position: fixed;
+        left: 0; right: 0; top: 0;
+        padding: 10px 12px;
+        font: 14px/1.4 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        color: #fff;
+        background: rgba(0,0,0,.45);
+        z-index: 10;
+        text-align: center;
+        pointer-events: none;
+      }
     </style>
   </head>
+
   <body>
-    <a-scene background="color: #111">
-      <a-entity position="0 1.6 0">
-        <a-camera></a-camera>
-      </a-entity>
+    <div class="hint">Hiroマーカーをカメラに映すと立方体が表示されます</div>
 
-      <a-box
-        position="0 1 -3"
-        rotation="0 45 0"
-        width="1"
-        height="1"
-        depth="1"
-        color="#4CC3D9"
-        shadow>
-      </a-box>
+    <a-scene
+      embedded
+      vr-mode-ui="enabled: false"
+      renderer="antialias: true; colorManagement: true; alpha: true"
+      arjs="sourceType: webcam; trackingMethod: best; debugUIEnabled: false;"
+    >
+      <!-- Hiro marker -->
+      <a-marker preset="hiro">
+        <a-box
+          position="0 0.5 0"
+          rotation="0 45 0"
+          width="1"
+          height="1"
+          depth="1"
+          color="#4CC3D9"
+        ></a-box>
 
-      <a-plane
-        position="0 0 -3"
-        rotation="-90 0 0"
-        width="10"
-        height="10"
-        color="#444"
-        shadow>
-      </a-plane>
+        <a-text
+          value="HIRO"
+          position="0 1.35 0"
+          rotation="-90 0 0"
+          align="center"
+          color="#FFFFFF"
+          width="3"
+        ></a-text>
+      </a-marker>
 
-      <a-light type="ambient" intensity="0.5"></a-light>
-      <a-light type="directional" intensity="0.9" position="1 3 2"></a-light>
+      <!-- Camera -->
+      <a-entity camera></a-entity>
     </a-scene>
   </body>
 </html>
